@@ -1,9 +1,20 @@
 import pygame
 import sys
-from exercise.helpers.keyboard_handler import KeyboardHandler
-from exercise.maze import Maze
-from exercise.helpers.constants import Constants
-from exercise.search import Search
+from helpers.keyboard_handler import KeyboardHandler
+from maze import Maze
+from helpers.constants import Constants
+from search import Search
+# try:
+#     from helpers.keyboard_handler import KeyboardHandler
+#     from maze import Maze
+#     from helpers.constants import Constants
+#     from search import Search
+# except:
+#     from exercise.helpers.keyboard_handler import KeyboardHandler
+#     from exercise.maze import Maze
+#     from exercise.helpers.constants import Constants
+#     from exercise.search import Search
+
 
 
 class Game:
@@ -102,6 +113,14 @@ class Game:
         if event.key == pygame.K_d:
             print("DFS")
             self.search.depth_first_solution()
+        
+        if event.key == pygame.K_g:
+            print("Greedy")
+            self.search.greedy_search()
+
+        if event.key == pygame.K_a:
+            print("A*")
+            self.search.a_star_search()
 
 
 

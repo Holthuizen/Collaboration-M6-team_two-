@@ -29,7 +29,7 @@ class GridElement:
     """
     Overload the less than operator
     """
-
+    #true if self is smaller than other, used by bisect 
     def __lt__(self, other):
         return (self.score is not None) and (other.score is None or self.score < other.score)
 
@@ -43,7 +43,7 @@ class GridElement:
     """
 
     def __repr__(self):
-        return "[%s, %s]" % (self.position, self.score)
+        return "[%s, %s, %s]" % (self.position, self.distance, self.score)
 
     """
     Remove all neighbours
@@ -92,7 +92,7 @@ class GridElement:
     def get_distance(self):
         return self.distance
 
-    def get_score(self, score):
+    def get_score(self):
         return self.score
 
     def get_position(self):

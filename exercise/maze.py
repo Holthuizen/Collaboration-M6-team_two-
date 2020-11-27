@@ -1,6 +1,12 @@
 import random
 from datetime import datetime
-from exercise.grid_element import GridElement
+
+try:
+    from grid_element import GridElement
+except:
+    from exercise.grid_element import GridElement
+
+
 
 
 
@@ -27,6 +33,8 @@ class Maze:
         self.target= self.grid[-1][-1]
         self.reset_all()
         random.seed(datetime.now())
+        print(F"grid_size.x {grid_size_x}, grid_size.y {grid_size_y}")
+
 
     """
     Resets the GridElements of the maze
