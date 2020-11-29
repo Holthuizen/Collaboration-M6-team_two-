@@ -1,9 +1,6 @@
 import pygame
 import sys
-# from helpers.keyboard_handler import KeyboardHandler
-# from maze import Maze
-# from helpers.constants import Constants
-# from search import Search
+#had some issuse between windows and mac
 try:
     from helpers.keyboard_handler import KeyboardHandler
     from maze import Maze
