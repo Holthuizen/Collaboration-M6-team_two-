@@ -92,75 +92,54 @@ class Search:
         print("The number of visited nodes is: {}".format(len(visited)))
         self.highlight_path()                       
 
-                        
-    # while openSet is not empty
-    #     current := the node in openSet having the lowest fScore[] value
-    #     if current = goal
-    #         return reconstruct_path(cameFrom, current)
-    #     openSet.Remove(current)
-
-    #     for each neighbor of current
-    #         // d(current,neighbor) is the weight of the edge from current to neighbor
-    #         // tentative_gScore is the distance from start to the neighbor through current
-    #         tentative_gScore := gScore[current] + d(current, neighbor)
-    #         if tentative_gScore < gScore[neighbor]
-    #             // This path to neighbor is better than any previous one. Record it!
-    #             cameFrom[neighbor] := current
-    #             gScore[neighbor] := tentative_gScore
-    #             fScore[neighbor] := gScore[neighbor] + h(neighbor)
-    #             if neighbor not in openSet
-    #                 openSet.add(neighbor)
-
-    # // Open set is empty but goal was never reached
-    # return failure
-
-    #gscore is == grid_element.distance
-    #fscore is == grid_element.score
-
     def a_star_search(self):
-        #reset maze/graph
         self.graph.reset_state()
-        start = self.graph.start
-        start.set_distance(0)
-        priority_queue = [start]
-        visited = [] #checked / finished 
-
-        while len(priority_queue)>0: 
-            n = priority_queue.pop()  #take the best node of the list
-            if (n != self.graph.target): #while goal not found do:
-                if(n not in visited):
-                    visited.append(n) #mark note as finally checked
-                    for s in n.get_neighbours(): 
-                        if s not in visited: #if s is finally checked: Do nothing
-                            #if s is already in priority_queue
-                            if s in priority_queue:
-                                print("in pq: ",s)
-                                # with LOWER cost (start --> neighbour dist): Do nothing: 
+        priority_queue = [self.graph.start] #open list
+        visited = [] #close list 
+        # while the priority queue is not empty
+        while len(priority_queue) > 0:
+            #the current node is the first node of the priority queue=
+            current = priority_queue.pop()
+            # if the current node is not the target
+            if (current != self.graph.target):
+                #add the current node to the visited nodes
+                if(current not in visited):
+                    visited.append(current)
+                    # for all neighbouring nodes of the current node
+                    for neighbour in current.get_neighbours(): 
+                        # if they have not been visited yet
+                        if neighbour not in visited: 
+                            # compute the new distance
+                            # compute the new score ( fscore plus gscore )
+                            new_score = current.distance + neighbour.manhattan_distance(self.graph.target)
+                            # if the neighbouring node is not in the priority queue
+                            if neighbour not in priority_queue:
                                 
-                                #HIGHER cost (start --> neighbour dist), Do:
-                                if n.distance + 1 < s.distance: ##does this any sence ?? 
-                                    #update cost and make n its parent
-                                    s.set_parent(n)
-                                    s.set_score(s.distance  + s.manhattan_distance( self.graph.target ) )
-                                    #i guess this needs to happen here: 
-                                    priority_queue.remove(s)
-                                    bisect.insort_left(priority_queue,s)
-        
-                            if s not in priority_queue: # if s is NOT YET in list: 
-                                #Add s with newly calculated cost and n as parrent 
-                                s.set_parent(n)
-                                s.set_score( s.distance + s.manhattan_distance( self.graph.target ) ) #traveled distance + distance to target
-                                bisect.insort_left(priority_queue,s)
-                                print("NOT in pq: ",s)
-                                              
-                else: 
-                    print("allready checked")
-                      
+                                # set the current node to be their parent (discussion point)
+                                #neighbour.set_parent(current)
+                                ##i dislike like hiding the distance update in set_parrent, so this is an alternative:
+                                neighbour.parent = current
+                                neighbour.distance = current.distance + 1
+                                
+                                # the score of the neighbouring node is the new score ? 
+                                current.set_score(new_score)
+                                # insert the neighbouring node into the priority queue
+                                bisect.insort_left(priority_queue, neighbour)
+                                print("current",current)
+                            
+                            # else if the the new distance is smaller than the current distance of the neighbouring node
+                            else: #in open list / priority queue
+                                if current.distance +1 < neighbour.distance: # +1? you still need to move from current to neighbour
+                                    #set the current node to be their parent (note distance gets updated)
+                                    neighbour.set_parent(current)
+                                    # remove the neighbouring node from the priority queue
+                                    priority_queue.remove(neighbour)
+                                    # insert the neighbouring node into the priority queue
+                                    bisect.insort_left(priority_queue,neighbour)
             else:
                 break
-        print("The number of visited nodes is: {}".format(len(visited)))
-        self.highlight_path()                       
-
+        print("A* -> The number of visited nodes is: {}".format(len(visited)))
+        self.highlight_path()    
 
 
     def highlight_path(self):
@@ -171,3 +150,6 @@ class Search:
             # print(current_node)
             current_node.set_color((248, 220, 50))
             current_node = current_node.parent
+
+                   
+
